@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ditclear.swipelayout.SwipeDragLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swip_layout"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    app:swipe_direction="left"
+    app:swipe_enable="true"
+    app:ios="true">
+
+    <LinearLayout
+        android:id="@+id/content_layout"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#ffffff"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:paddingLeft="40dp"
+        android:tag="content">
+
+        <TextView
+            android:id="@+id/alarm_clock_tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="#22aa77"/>
+
+        <TextView
+            android:id="@+id/alarm_clock_tv2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="#00BCD4"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/menu_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:tag="menu">
+
+        <TextView
+            android:id="@+id/edit"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:background="#FF6347"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:gravity="center"
+            android:text="编辑"/>
+
+        <TextView
+            android:id="@+id/delete"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:background="#4cd964"
+            android:gravity="center"
+            android:paddingLeft="22dp"
+            android:paddingRight="22dp"
+            android:text="删除"/>
+    </LinearLayout>
+</com.ditclear.swipelayout.SwipeDragLayout>
