@@ -49,29 +49,36 @@ public class ExPandableListViewAdapter extends BaseExpandableListAdapter {
 
     // 定义二级列表中的数据
     @Override
-    public View getChildView(final int arg0, final int arg1, boolean arg2, View arg3, ViewGroup arg4) {
+    public View getChildView(final int groupPosition,final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         // 定义一个二级列表的视图类
         final HolderView childrenView;
-        if (arg3 == null) {
+        if (convertView == null) {
             childrenView = new HolderView();
             // 获取子视图的布局文件
-            arg3 = mInflater.inflate(R.layout.activity_main_children, arg4, false);
-            childrenView.content_layout = (LinearLayout) arg3.findViewById(R.id.content_layout);
-            childrenView.titleView = (TextView) arg3.findViewById(R.id.alarm_clock_tv1);
-            childrenView.descView = (TextView) arg3.findViewById(R.id.alarm_clock_tv2);
-            childrenView.swipeDragLayout=arg3.findViewById(R.id.swip_layout);
-            childrenView.edit = (TextView) arg3.findViewById(R.id.edit);
-            childrenView.delete = (TextView) arg3.findViewById(R.id.delete);
+            convertView = mInflater.inflate(R.layout.activity_main_children, parent, false);
+            childrenView.content_layout = (LinearLayout) convertView.findViewById(R.id.content_layout);
+            childrenView.titleView = (TextView) convertView.findViewById(R.id.alarm_clock_tv1);
+            childrenView.descView = (TextView) convertView.findViewById(R.id.alarm_clock_tv2);
+            childrenView.swipeDragLayout=convertView.findViewById(R.id.swip_layout);
+            childrenView.edit = (TextView) convertView.findViewById(R.id.edit);
+            childrenView.delete = (TextView) convertView.findViewById(R.id.delete);
             // 这个函数是用来将holderview设置标签,相当于缓存在view当中
-            arg3.setTag(childrenView);
+            convertView.setTag(childrenView);
+
+            // 标记位置
+            // 必须使用资源Id当key（不是资源id会出现运行时异常），android本意应该是想用tag来保存资源id对应组件。
+            // 将groupPosition，childPosition通过setTag保存,在onItemLongClick方法中就可以通过view参数直接拿到了！
+            convertView.setTag(R.id.alarm_clock_father_tv, groupPosition);//用父类布局中控件id做key
+            convertView.setTag(R.id.content_layout, childPosition);//用子类布局中layout的id做key
+
         } else {
-            childrenView = (HolderView) arg3.getTag();
+            childrenView = (HolderView) convertView.getTag();
         }
 
         childrenView.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                data_list.get(arg0).getList().remove(arg1);
+                data_list.get(groupPosition).getList().remove(childPosition);
                 notifyDataSetChanged();
                 childrenView.swipeDragLayout.close();
             }
@@ -80,19 +87,26 @@ public class ExPandableListViewAdapter extends BaseExpandableListAdapter {
         /**
          * 设置相应控件的内容
          */
-        final String title = data_list.get(arg0).getList().get(arg1).getTitle();
+        final String title = data_list.get(groupPosition).getList().get(childPosition).getTitle();
         // 设置标题上的文本信息
         childrenView.titleView.setText(title);
         // 设置副标题上的文本信息
-        childrenView.descView.setText(data_list.get(arg0).getList().get(arg1).getDesc());
+        childrenView.descView.setText(data_list.get(groupPosition).getList().get(childPosition).getDesc());
         childrenView.content_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(context, "点击了" + title, Toast.LENGTH_SHORT).show();
             }
         });
+//        childrenView.content_layout.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View view) {
+//                Toast.makeText(context, "长按子项" + title, Toast.LENGTH_SHORT).show();
+//                return false;
+//            }
+//        });
 
-        return arg3;
+        return convertView;
     }
 
     // 保存二级列表的视图类
@@ -130,20 +144,25 @@ public class ExPandableListViewAdapter extends BaseExpandableListAdapter {
 
     // 设置一级列表的view
     @Override
-    public View getGroupView(int arg0, boolean arg1, View arg2, ViewGroup arg3) {
+    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         HodlerViewFather hodlerViewFather;
-        if (arg2 == null) {
+        if (convertView == null) {
             hodlerViewFather = new HodlerViewFather();
-            arg2 = mInflater.inflate(R.layout.activity_main_father, arg3, false);
-            hodlerViewFather.titlev = (TextView) arg2.findViewById(R.id.alarm_clock_father_tv);
+            convertView = mInflater.inflate(R.layout.activity_main_father, parent, false);
+            hodlerViewFather.titlev = (TextView) convertView.findViewById(R.id.alarm_clock_father_tv);
             // 新建一个TextView对象，用来显示一级标签上的大体描述的信息
-            hodlerViewFather.group_state = (ImageView) arg2.findViewById(R.id.group_state);
-            arg2.setTag(hodlerViewFather);
+            hodlerViewFather.group_state = (ImageView) convertView.findViewById(R.id.group_state);
+            convertView.setTag(hodlerViewFather);
+
+            // 设置同getChildView一样
+            convertView.setTag(R.id.alarm_clock_father_tv, groupPosition);
+            convertView.setTag(R.id.content_layout, -1); //设置-1表示长按时点击的是父项，到时好判断。
+
         } else {
-            hodlerViewFather = (HodlerViewFather) arg2.getTag();
+            hodlerViewFather = (HodlerViewFather) convertView.getTag();
         }
         // 一级列表右侧判断箭头显示方向
-        if (arg1) {
+        if (isExpanded) {
             hodlerViewFather.group_state.setImageResource(R.mipmap.down);
         } else {
             hodlerViewFather.group_state.setImageResource(R.mipmap.right);
@@ -152,10 +171,10 @@ public class ExPandableListViewAdapter extends BaseExpandableListAdapter {
          * 设置相应控件的内容
          */
         // 设置标题上的文本信息
-        hodlerViewFather.titlev.setText(data_list.get(arg0).getTitle());
+        hodlerViewFather.titlev.setText(data_list.get(groupPosition).getTitle());
 
         // 返回一个布局对象
-        return arg2;
+        return convertView;
     }
 
     // 定义一个 一级列表的view类

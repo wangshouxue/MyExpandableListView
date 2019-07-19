@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
@@ -35,11 +36,29 @@ public class MainActivity extends AppCompatActivity {
         myExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView arg0, View arg1, int arg2, long arg3) {
-                Toast.makeText(MainActivity.this, datas.get(arg2).getTitle(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, datas.get(arg2).getTitle(), Toast.LENGTH_SHORT).show();
                 return false;
             }
         });
+        //长按事件
+        myExpandableListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view,int pos, long id) {
+                int groupPos = (Integer)view.getTag(R.id.alarm_clock_father_tv); //参数值是在setTag时使用的对应资源id号
+                int childPos = (Integer)view.getTag(R.id.content_layout);
+                if(childPos == -1){//长按的是父项
+                    // 根据groupPos判断你长按的是哪个父项，做相应处理（弹框等）
+                    Toast.makeText(MainActivity.this, "长按父"+datas.get(groupPos).getTitle(), Toast.LENGTH_SHORT).show();
+                } else {
+                    //子项不响应，未找到原因。。。
+                    //根据groupPos及childPos判断你长按的是哪个父项下的哪个子项，然后做相应处理。
+                    Toast.makeText(MainActivity.this, "长按子"+datas.get(groupPos).getList().get(childPos).getTitle(), Toast.LENGTH_LONG).show();
+                }
 
+
+                return false;
+            }
+        });
 //         设置二级item点击的监听器，同时在Adapter中设置isChildSelectable返回值true，同时二级列表布局中控件不能设置点击效果
 //        myExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 //            @Override
