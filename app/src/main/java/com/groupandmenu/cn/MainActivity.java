@@ -35,21 +35,21 @@ public class MainActivity extends AppCompatActivity {
         myExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView arg0, View arg1, int arg2, long arg3) {
-//                Toast.makeText(Seco.this, datas.get(arg2).getTitle(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, datas.get(arg2).getTitle(), Toast.LENGTH_LONG).show();
                 return false;
             }
         });
 
 //         设置二级item点击的监听器，同时在Adapter中设置isChildSelectable返回值true，同时二级列表布局中控件不能设置点击效果
-        myExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView arg0, View arg1, int arg2, int arg3, long arg4) {
-                Toast.makeText(MainActivity.this, datas.get(arg2).getList().get(arg3).getTitle(), Toast.LENGTH_LONG).show();
-                Log.i("====cc",datas.get(arg2).getList().get(arg3).getTitle());
-
-                return false;
-            }
-        });
+//        myExpandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+//            @Override
+//            public boolean onChildClick(ExpandableListView arg0, View arg1, int arg2, int arg3, long arg4) {
+//                Toast.makeText(MainActivity.this, datas.get(arg2).getList().get(arg3).getTitle(), Toast.LENGTH_LONG).show();
+//                Log.i("====cc",datas.get(arg2).getList().get(arg3).getTitle());
+//
+//                return false;
+//            }
+//        });
     }
 
     /**

@@ -6,7 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ditclear.swipelayout.SwipeDragLayout;
 
@@ -54,6 +56,7 @@ public class ExPandableListViewAdapter extends BaseExpandableListAdapter {
             childrenView = new HolderView();
             // 获取子视图的布局文件
             arg3 = mInflater.inflate(R.layout.activity_main_children, arg4, false);
+            childrenView.content_layout = (LinearLayout) arg3.findViewById(R.id.content_layout);
             childrenView.titleView = (TextView) arg3.findViewById(R.id.alarm_clock_tv1);
             childrenView.descView = (TextView) arg3.findViewById(R.id.alarm_clock_tv2);
             childrenView.swipeDragLayout=arg3.findViewById(R.id.swip_layout);
@@ -77,15 +80,24 @@ public class ExPandableListViewAdapter extends BaseExpandableListAdapter {
         /**
          * 设置相应控件的内容
          */
+        final String title = data_list.get(arg0).getList().get(arg1).getTitle();
         // 设置标题上的文本信息
-        childrenView.titleView.setText(data_list.get(arg0).getList().get(arg1).getTitle());
+        childrenView.titleView.setText(title);
         // 设置副标题上的文本信息
         childrenView.descView.setText(data_list.get(arg0).getList().get(arg1).getDesc());
+        childrenView.content_layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "点击了" + title, Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return arg3;
     }
 
     // 保存二级列表的视图类
     private class HolderView {
+        LinearLayout content_layout;
         TextView titleView;
         TextView descView;
         SwipeDragLayout swipeDragLayout;
